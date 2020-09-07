@@ -1,3 +1,7 @@
+<style lang="css">
+  @import '../css/scheduleC.css';
+</style>
+
 <template>
   <div class="ui container">
     <sui-form>
@@ -29,11 +33,11 @@
       </sui-form-fields>
     </sui-form>
 
-    <button class="ui right floated icon button primary" @click="nextSchedule()" :disabled="schedules.length <= 1">
+    <button class="ui right floated icon button primary uiTable" @click="nextSchedule()" :disabled="schedules.length <= 1">
       Next
       <i class="icon right arrow"></i>
     </button>
-    <button class="ui right floated icon button primary" @click="prevSchedule()" :disabled="schedules.length <= 1">
+    <button class="ui right floated icon button primary uiTable" @click="prevSchedule()" :disabled="schedules.length <= 1">
       <i class="icon left arrow"></i>
       Prev
     </button>
@@ -43,7 +47,7 @@
     </span>
 
     <div class="">
-      <div class="ui labels">
+      <div class="ui labels uiTable">
         <a class="ui white label" v-if="selectedCourses.length === 0" style="cursor: default ">
           No course selected
         </a>
@@ -54,19 +58,19 @@
       </div>
     </div>
 
-    <table class="ui celled definition compact table">
-      <thead>
-      <tr>
-        <th style="width: 9%"></th>
-        <th style="width: 13%" v-for="d in dayNames" v-bind:key="d" class="center aligned">{{ d }}</th>
+    <table class="ui celled definition compact" v-bind:class="{ table: isBig }">
+      <thead id = "dTable">
+      <tr id = "trTable">
+        <th style="width: 9%" id = "trTable1"></th>
+        <th style="width: 13%" id = "trTable2" v-for="d in dayNames" v-bind:key="d" class="center aligned trTable2">{{ d }}</th>
       </tr>
       </thead>
-      <tbody>
-      <tr v-for="i in timeSlots" v-bind:key="i" style="height: 35px">
-        <td class="right aligned">{{ i }}</td>
-        <td v-for="j in dayNames" v-bind:key="j" class="center aligned" @click="filterSlot(i,j)" v-bind:class="{'active': isSlotReserved(i,j)}">
+      <tbody class = "scTable" id = "scTable">
+      <tr id = "hiTable" v-for="i in timeSlots" v-bind:key="i" style="height: 35px" class="hiTable">
+        <td class="right aligned scTable1" id = "scTable1">{{ i }}</td>
+        <td v-for="j in dayNames" v-bind:key="j" class="center aligned scTable2" @click="filterSlot(i,j)" v-bind:class="{'active': isSlotReserved(i,j)}" id = "scTable2">
           <span v-if="isSlotReserved(i,j)"></span>
-          <span v-if="getTimeSlot(i,j)" :title="getTimeSlot(i,j).place + '\n' + getTimeSlot(i,j).type" :style="`background-color: ${findColor(getTimeSlot(i,j))}; color: white; padding: 2px 10px;border-radius: 5px;font-size: 12px;font-weight: bold;`">
+          <span class = "scTable3" v-if="getTimeSlot(i,j)" :title="getTimeSlot(i,j).place + '\n' + getTimeSlot(i,j).type" :style="`background-color: ${findColor(getTimeSlot(i,j))}; color: white; padding: 2px 10px;border-radius: 5px;font-size: 12px;font-weight: bold;`">
           {{ getTimeSlot(i, j).name }}
         </span>
         </td>
@@ -76,36 +80,36 @@
 
     <br/>
 
-    <div class="ui grid">
-      <div class="eight wide column">
-        <h4 class="ui header">
-          <i class="settings icon"></i>
+    <div class="ui grid foTable">
+      <div class="eight wide column foottTable">
+        <h4 class="ui header selectTable">
+          <i class="settings icon fooiconTable"></i>
           <div class="content">
             Selection Details
             <div class="sub header">Details about this specific combination.</div>
           </div>
         </h4>
-        <table class="ui very basic table very compact">
-          <thead>
+        <table class="ui very basic table very compact ">
+          <thead class = "infcTable">
           <tr>
             <th width="50%">Course</th>
             <th width="10%">Section</th>
             <th width="60%">Instructor</th>
           </tr>
           </thead>
-          <tbody v-if="currentScheduleDetails">
-          <tr v-for="d in currentScheduleDetails" v-bind:key="d.section">
-            <td><b>{{ d.courseCode }}</b>
+          <tbody v-if="currentScheduleDetails" class = "cursTable">
+          <tr class = "cursiTable" v-for="d in currentScheduleDetails" v-bind:key="d.section" >
+            <td class = "curscTable"><b>{{ d.courseCode }}</b>
               <br/>
               <small>{{ d.courseName }}</small>
             </td>
             <td>
-              <a style="cursor: pointer" @click="addSectionFilter(d.section)">
+              <a class = "curssTable" style="cursor: pointer" @click="addSectionFilter(d.section)">
                 {{ d.section.split("-")[1] }}
               </a>
             </td>
             <td>
-              <a style="cursor: pointer" @click="addInstructorFilter(d.data.instructor)">
+              <a class = "curssTable" style="cursor: pointer" @click="addInstructorFilter(d.data.instructor)">
                 {{ d.data.instructor }}
               </a>
             </td>
@@ -114,16 +118,16 @@
         </table>
       </div>
 
-      <div class="four wide column">
+      <div class="four wide column foottTable">
         <h4 class="ui header">
-          <i class="icon filter"></i>
+          <i class="icon filter fooiconTable"></i>
           <div class="content">
             Filtered Instructors
             <div class="sub header">One can have a preference.</div>
           </div>
         </h4>
 
-        <p v-if="filteredInstructors.length === 0">Click a instructor name to filter them if you wish.</p>
+        <p class = "curscTable" v-if="filteredInstructors.length === 0">Click a instructor name to filter them if you wish.</p>
 
         <div class="ui labels">
           <a class="ui label" v-for="f in filteredInstructors" v-bind:key="f" @click="removeInstructorFilter(f)">
@@ -133,16 +137,16 @@
         </div>
       </div>
 
-      <div class="four wide column">
+      <div class="four wide column foottTable">
         <h4 class="ui header">
-          <i class="icon table"></i>
+          <i class="icon table fooiconTable"></i>
           <div class="content">
             Filtered Sections
             <div class="sub header">Want same section with your friend?</div>
           </div>
 
         </h4>
-        <p v-if="filteredSections.length === 0">Click a section to add to filter.</p>
+        <p class = "curscTable" v-if="filteredSections.length === 0">Click a section to add to filter.</p>
 
         <div class="ui labels">
           <a class="ui label" v-for="f in filteredSections" v-bind:key="f" @click="removeSectionFilter(f)">
@@ -152,6 +156,9 @@
         </div>
 
       </div>
+    </div>
+    <div class = "footer" style = "align: rigth">
+      <p class = "mustafa">Created by <b>Mustafa AKIN</b></p>
     </div>
   </div>
 
@@ -187,9 +194,17 @@ export default {
       selectedDepartment: null,
       selectedCourse: null,
       scheduleIndex: 0,
-      colors: ["#21ba45", "#db2828", "#2185d0", "#00b5ad", "#6435c9", "#f2711c", "#a333c8"]
+      colors: ["#21ba45", "#db2828", "#2185d0", "#00b5ad", "#6435c9", "#f2711c", "#a333c8"],
+      isBig: true
     };
   },
+  created() {
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
+    },
+    destroyed() {
+        window.removeEventListener('resize', this.handleResize);
+    },
   computed: {
     courses: function () {
       if (!this.selectedDepartment) {
@@ -265,6 +280,15 @@ export default {
     }
   },
   methods: {
+    handleResize() {
+      if(window.innerWidth < 766)
+      {
+        this.isBig = false;
+      }  
+      else {
+        this.isBig = true;
+      }    
+    },
     addCourse: function (department, course) {
       this.selectedCourses.push({
         department, course
